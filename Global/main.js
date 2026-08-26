@@ -1,6 +1,6 @@
 // 🔑 Config loaded from build-generated config.js
-const SUPABASE_URL = window.__SUPABASE_CONFIG?.url;
-const SUPABASE_ANON_KEY = window.__SUPABASE_CONFIG?.anonKey;
+const SUPABASE_URL = "https://igyqackffggpyrcvihzw.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_KKe7DFftc9w3M3a1aVUVlQ_zO7KdfPP";
 
 let supabaseClient = null;
 let currentUser = null;
