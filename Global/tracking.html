@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Logistics - Tracking</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <style>#map{height:400px;border-radius:0.75rem;}</style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans">
+  <!-- header -->
+  <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="index.html" class="flex items-center space-x-2">
+          <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center"><span class="text-white font-bold text-lg">GL</span></div>
+          <span class="text-xl font-bold text-slate-800">GLOBAL LOGISTICS</span>
+        </a>
+        <nav id="nav-links" class="hidden md:flex items-center space-x-6"></nav>
+        <button onclick="toggleMobileMenu()" class="md:hidden text-slate-700"><i class="fas fa-bars text-2xl"></i></button>
+      </div>
+    </div>
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+      <div id="mobile-nav-links" class="px-4 py-3 space-y-2"></div>
+    </div>
+  </header>
+
+  <section class="py-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h1 class="text-4xl font-bold text-center mb-8">Live Package Tracking</h1>
+      <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+        <div class="flex space-x-2">
+          <input type="text" id="tracking-input" placeholder="Enter tracking ID (e.g., GL-ABC123)" class="flex-1 border rounded-lg px-4 py-3 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+          <button onclick="trackPackage()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition font-semibold"><i class="fas fa-search mr-2"></i>Track</button>
+        </div>
+        <div id="track-error" class="text-red-600 text-sm mt-2 hidden"></div>
+      </div>
+      <div id="tracking-result" class="hidden">
+        <div id="delivered-banner" class="hidden bg-green-100 border border-green-300 text-green-800 rounded-xl p-4 mb-6 text-center">
+          <i class="fas fa-check-circle text-2xl mb-2"></i>
+          <div class="font-bold text-lg">Package Delivered!</div>
+          <div class="text-sm">This tracking code has expired.</div>
+        </div>
+        <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div><div class="text-sm text-slate-500">Tracking ID</div><div id="res-tracking-id" class="font-semibold text-lg"></div></div>
+            <div><div class="text-sm text-slate-500">Status</div><div id="res-status" class="font-semibold text-lg"></div></div>
+            <div><div class="text-sm text-slate-500">Origin</div><div id="res-origin" class="font-semibold"></div></div>
+            <div><div class="text-sm text-slate-500">Destination</div><div id="res-destination" class="font-semibold"></div></div>
+            <div><div class="text-sm text-slate-500">Estimated Delivery</div><div id="res-est-delivery" class="font-semibold"></div></div>
+            <div><div class="text-sm text-slate-500">Customer Email</div><div id="res-email" class="font-semibold"></div></div>
+          </div>
+        </div>
+        <div id="live-data" class="hidden bg-white rounded-xl shadow-md p-6 mb-6">
+          <h3 class="text-xl font-bold mb-4">Live Location</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div class="bg-slate-50 rounded-lg p-4 text-center"><div class="text-sm text-slate-500">Current Position</div><div id="live-position" class="font-mono text-sm"></div></div>
+            <div class="bg-slate-50 rounded-lg p-4 text-center"><div class="text-sm text-slate-500">Progress</div><div id="live-progress" class="font-bold text-blue-600"></div></div>
+            <div class="bg-slate-50 rounded-lg p-4 text-center"><div class="text-sm text-slate-500">Time Remaining</div><div id="live-remaining" class="font-bold"></div></div>
+          </div>
+          <div id="map"></div>
+        </div>
+        <div id="no-map-info" class="hidden bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-center text-yellow-800"><i class="fas fa-info-circle mr-2"></i> Map coordinates not available for this shipment.</div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bg-slate-800 text-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="flex items-center justify-center space-x-2 mb-4">
+        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center"><span class="text-white font-bold text-sm">GL</span></div>
+        <span class="text-lg font-bold">GLOBAL LOGISTICS</span>
+      </div>
+      <div class="text-slate-400 mb-4">
+        <p><i class="fas fa-phone mr-2"></i> +1 (800) 555-0199</p>
+        <p><i class="fas fa-envelope mr-2"></i> support@globallogistics.com</p>
+      </div>
+      <div class="text-slate-500 text-sm">&copy; 2024 Global Logistics. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <div class="fixed bottom-6 right-6 z-50">
+    <button onclick="toggleChat()" class="w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition flex items-center justify-center"><i class="fas fa-robot text-2xl"></i></button>
+    <div id="chat-window" class="hidden absolute bottom-16 right-0 w-80 bg-white rounded-xl shadow-2xl border">
+      <div class="bg-blue-600 text-white p-4 rounded-t-xl flex justify-between items-center">
+        <span class="font-semibold"><i class="fas fa-robot mr-2"></i>GL Assistant</span>
+        <button onclick="toggleChat()" class="hover:text-slate-200"><i class="fas fa-times"></i></button>
+      </div>
+      <div id="chat-messages" class="max-h-80 overflow-y-auto p-4 space-y-2">
+        <div class="mb-2"><span class="inline-block bg-slate-200 text-slate-700 px-3 py-2 rounded-lg text-sm">Hello! I'm your logistics assistant. How can I help you today?</span></div>
+      </div>
+      <div class="p-3 border-t">
+        <div class="flex space-x-2">
+          <input id="chat-input" type="text" placeholder="Ask about shipping..." class="flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-600">
+          <button onclick="processAIQuery()" class="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700"><i class="fas fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/config.js"></script>
+  <script src="/main.js"></script>
+  <script>
+    (function() {
+      let checkInterval;
+
+      function waitForSupabase() {
+        if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+          clearInterval(checkInterval);
+          initTracking();
+        }
+      }
+
+      function initTracking() {
+        let map = null, movingMarker = null, updateInterval = null, currentTracking = null;
+
+        async function checkAuthGuard() {
+          await checkAuth();
+          if (!currentUser) window.location.href = 'login.html';
+        }
+
+        async function trackPackage() {
+          const input = document.getElementById('tracking-input').value.trim();
+          const errorDiv = document.getElementById('track-error');
+          const resultDiv = document.getElementById('tracking-result');
+          if (!input) { errorDiv.textContent = 'Please enter a tracking ID.'; errorDiv.classList.remove('hidden'); return; }
+          errorDiv.classList.add('hidden');
+          try {
+            const { data, error } = await supabaseClient.from('tracking').select('*').eq('tracking_id', input).single();
+            if (error || !data) {
+              errorDiv.textContent = 'Tracking ID not found. Please check and try again.';
+              errorDiv.classList.remove('hidden');
+              resultDiv.classList.add('hidden');
+              return;
+            }
+            currentTracking = data;
+            displayTracking(data);
+          } catch (err) {
+            errorDiv.textContent = 'Error fetching tracking data. Please try again.';
+            errorDiv.classList.remove('hidden');
+          }
+        }
+
+        function displayTracking(data) {
+          const resultDiv = document.getElementById('tracking-result');
+          const deliveredBanner = document.getElementById('delivered-banner');
+          const liveData = document.getElementById('live-data');
+          const noMapInfo = document.getElementById('no-map-info');
+          resultDiv.classList.remove('hidden');
+          document.getElementById('res-tracking-id').textContent = data.tracking_id;
+          document.getElementById('res-status').textContent = data.status;
+          document.getElementById('res-origin').textContent = data.origin;
+          document.getElementById('res-destination').textContent = data.destination;
+          document.getElementById('res-est-delivery').textContent = data.estimated_delivery || 'N/A';
+          document.getElementById('res-email').textContent = data.customer_email || 'N/A';
+          const statusEl = document.getElementById('res-status');
+          if (data.status === 'Delivered') statusEl.className = 'font-semibold text-lg text-green-600';
+          else if (data.status === 'In Transit') statusEl.className = 'font-semibold text-lg text-blue-600';
+          else if (data.status === 'Exception') statusEl.className = 'font-semibold text-lg text-red-600';
+          else statusEl.className = 'font-semibold text-lg text-yellow-600';
+          if (data.status === 'Delivered') {
+            deliveredBanner.classList.remove('hidden');
+            liveData.classList.add('hidden');
+            noMapInfo.classList.add('hidden');
+            if (data.dest_lat && data.dest_lng) showStaticMap(data.dest_lat, data.dest_lng, data.destination);
+          } else {
+            deliveredBanner.classList.add('hidden');
+            if (data.origin_lat && data.origin_lng && data.dest_lat && data.dest_lng) {
+              liveData.classList.remove('hidden');
+              noMapInfo.classList.add('hidden');
+              startLiveMap(data);
+            } else {
+              liveData.classList.add('hidden');
+              noMapInfo.classList.remove('hidden');
+            }
+          }
+        }
+
+        function showStaticMap(lat, lng, label) {
+          const liveData = document.getElementById('live-data');
+          liveData.classList.remove('hidden');
+          document.getElementById('live-position').textContent = lat.toFixed(4) + ', ' + lng.toFixed(4);
+          document.getElementById('live-progress').textContent = '100%';
+          document.getElementById('live-remaining').textContent = 'Delivered';
+          if (map) { map.remove(); map = null; }
+          if (updateInterval) { clearInterval(updateInterval); }
+          map = L.map('map').setView([lat, lng], 10);
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(map);
+          L.marker([lat, lng]).addTo(map).bindPopup('<b>Delivered to:</b> ' + label).openPopup();
+        }
+
+        function startLiveMap(data) {
+          if (map) { map.remove(); map = null; }
+          if (updateInterval) { clearInterval(updateInterval); }
+          const origin = [data.origin_lat, data.origin_lng];
+          const dest = [data.dest_lat, data.dest_lng];
+          const midLat = (origin[0] + dest[0]) / 2;
+          const midLng = (origin[1] + dest[1]) / 2;
+          map = L.map('map').setView([midLat, midLng], 4);
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(map);
+          L.marker(origin).addTo(map).bindPopup('<b>Origin:</b> ' + data.origin);
+          L.marker(dest).addTo(map).bindPopup('<b>Destination:</b> ' + data.destination);
+          const polyline = L.polyline([origin, dest], { color: 'blue', weight: 3, opacity: 0.7 }).addTo(map);
+          map.fitBounds(polyline.getBounds(), { padding: [50, 50] });
+          const truckIcon = L.divIcon({
+            html: '<i class="fas fa-truck text-blue-600 text-xl"></i>',
+            className: 'truck-marker',
+            iconSize: [24, 24],
+            iconAnchor: [12, 12]
+          });
+          movingMarker = L.marker(origin, { icon: truckIcon }).addTo(map);
+          const startTime = new Date(data.created_at).getTime();
+          const durationMs = (data.duration_hours || 24) * 3600000;
+
+          function updatePosition() {
+            const now = Date.now();
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / durationMs, 1);
+            const currentLat = origin[0] + (dest[0] - origin[0]) * progress;
+            const currentLng = origin[1] + (dest[1] - origin[1]) * progress;
+            movingMarker.setLatLng([currentLat, currentLng]);
+            document.getElementById('live-position').textContent = currentLat.toFixed(4) + ', ' + currentLng.toFixed(4);
+            document.getElementById('live-progress').textContent = (progress * 100).toFixed(1) + '%';
+            const remainingMs = Math.max(durationMs - elapsed, 0);
+            const remainingHours = Math.floor(remainingMs / 3600000);
+            const remainingMins = Math.floor((remainingMs % 3600000) / 60000);
+            document.getElementById('live-remaining').textContent = progress >= 1 ? 'Arriving soon' : remainingHours + 'h ' + remainingMins + 'm';
+          }
+
+          updatePosition();
+          updateInterval = setInterval(updatePosition, 1000);
+        }
+
+        window.trackPackage = trackPackage;
+        document.getElementById('tracking-input').addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') trackPackage();
+        });
+
+        checkAuthGuard();
+      }
+
+      checkInterval = setInterval(waitForSupabase, 200);
+      setTimeout(waitForSupabase, 0);
+    })();
+  </script>
+</body>
+</html>

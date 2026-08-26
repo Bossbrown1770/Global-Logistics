@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Logistics - Home</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <style>.slide{transition:opacity 1s ease-in-out;}.chat-window{max-height:400px;overflow-y:auto;}</style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans">
+  <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="index.html" class="flex items-center space-x-2">
+          <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center"><span class="text-white font-bold text-lg">GL</span></div>
+          <span class="text-xl font-bold text-slate-800">GLOBAL LOGISTICS</span>
+        </a>
+        <nav id="nav-links" class="hidden md:flex items-center space-x-6">
+          <!-- dynamically filled by main.js -->
+        </nav>
+        <button onclick="toggleMobileMenu()" class="md:hidden text-slate-700"><i class="fas fa-bars text-2xl"></i></button>
+      </div>
+    </div>
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+      <div id="mobile-nav-links" class="px-4 py-3 space-y-2"></div>
+    </div>
+  </header>
+
+  <section class="relative h-[500px] overflow-hidden">
+    <div class="slide absolute inset-0 opacity-100">
+      <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1200&h=500&fit=crop" alt="Logistics" class="w-full h-full object-cover">
+      <div class="absolute inset-0 bg-black/50 flex items-center justify-center">
+        <div class="text-center text-white px-4">
+          <h1 class="text-4xl md:text-6xl font-bold mb-4">Global Shipping Solutions</h1>
+          <p class="text-xl mb-6">Reliable logistics for businesses worldwide</p>
+          <a href="tracking.html" class="bg-blue-600 text-white px-8 py-3 rounded-lg text-lg hover:bg-blue-700 transition">Track Your Package</a>
+        </div>
+      </div>
+    </div>
+    <div class="slide absolute inset-0 opacity-0">
+      <img src="https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=1200&h=500&fit=crop" alt="Shipping" class="w-full h-full object-cover">
+      <div class="absolute inset-0 bg-black/50 flex items-center justify-center">
+        <div class="text-center text-white px-4">
+          <h1 class="text-4xl md:text-6xl font-bold mb-4">Fast & Secure Delivery</h1>
+          <p class="text-xl mb-6">Your packages, our priority</p>
+          <a href="contact.html" class="bg-blue-600 text-white px-8 py-3 rounded-lg text-lg hover:bg-blue-700 transition">Get a Quote</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-12 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="bg-blue-600 rounded-2xl p-8 text-center text-white">
+        <h2 class="text-2xl font-bold mb-4">Track Your Shipment</h2>
+        <p class="mb-6">Enter your tracking ID to get real-time updates on your package</p>
+        <a href="tracking.html" class="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-slate-100 transition">Go to Tracking</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-center mb-12">Our Services</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+          <img src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=400&h=250&fit=crop" alt="Air Freight" class="w-full h-48 object-cover">
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-2">Air Freight</h3>
+            <p class="text-slate-600 mb-4">Fast international shipping via air cargo with real-time tracking.</p>
+            <button onclick="openModal('modal-air')" class="text-blue-600 font-medium hover:underline">Learn More</button>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+          <img src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=400&h=250&fit=crop" alt="Ocean Freight" class="w-full h-48 object-cover">
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-2">Ocean Freight</h3>
+            <p class="text-slate-600 mb-4">Cost-effective sea shipping for large volumes and heavy cargo.</p>
+            <button onclick="openModal('modal-ocean')" class="text-blue-600 font-medium hover:underline">Learn More</button>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+          <img src="https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=400&h=250&fit=crop" alt="Ground Transport" class="w-full h-48 object-cover">
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-2">Ground Transport</h3>
+            <p class="text-slate-600 mb-4">Reliable trucking and rail services across continents.</p>
+            <button onclick="openModal('modal-ground')" class="text-blue-600 font-medium hover:underline">Learn More</button>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+          <img src="https://images.unsplash.com/photo-1553413077-190dd305871c?w=400&h=250&fit=crop" alt="Warehousing" class="w-full h-48 object-cover">
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-2">Warehousing</h3>
+            <p class="text-slate-600 mb-4">Secure storage and inventory management solutions.</p>
+            <button onclick="openModal('modal-warehouse')" class="text-blue-600 font-medium hover:underline">Learn More</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modals (same as provided) -->
+  <div id="modal-air" class="modal-overlay hidden fixed inset-0 bg-black/50 z-50 items-center justify-center p-4">
+    <div class="bg-white rounded-xl max-w-lg w-full p-6 relative">
+      <button onclick="closeModal('modal-air')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fas fa-times text-xl"></i></button>
+      <h3 class="text-2xl font-bold mb-4">Air Freight</h3>
+      <p class="text-slate-600 mb-4">Our air freight service offers expedited shipping to over 200 countries. With partnerships with major airlines, we ensure your cargo reaches its destination within 24-72 hours.</p>
+      <ul class="list-disc list-inside text-slate-600 space-y-1"><li>Express delivery options</li><li>Temperature-controlled cargo</li><li>Door-to-door service</li><li>Real-time flight tracking</li></ul>
+    </div>
+  </div>
+  <div id="modal-ocean" class="modal-overlay hidden fixed inset-0 bg-black/50 z-50 items-center justify-center p-4">
+    <div class="bg-white rounded-xl max-w-lg w-full p-6 relative">
+      <button onclick="closeModal('modal-ocean')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fas fa-times text-xl"></i></button>
+      <h3 class="text-2xl font-bold mb-4">Ocean Freight</h3>
+      <p class="text-slate-600 mb-4">Full container load (FCL) and less than container load (LCL) options available. We handle customs clearance and port logistics for seamless delivery.</p>
+      <ul class="list-disc list-inside text-slate-600 space-y-1"><li>FCL and LCL shipping</li><li>Customs brokerage</li><li>Port-to-port and door-to-door</li><li>Competitive rates</li></ul>
+    </div>
+  </div>
+  <div id="modal-ground" class="modal-overlay hidden fixed inset-0 bg-black/50 z-50 items-center justify-center p-4">
+    <div class="bg-white rounded-xl max-w-lg w-full p-6 relative">
+      <button onclick="closeModal('modal-ground')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fas fa-times text-xl"></i></button>
+      <h3 class="text-2xl font-bold mb-4">Ground Transport</h3>
+      <p class="text-slate-600 mb-4">Our fleet of over 500 trucks and partnerships with rail operators ensure reliable ground transportation across North America, Europe, and Asia.</p>
+      <ul class="list-disc list-inside text-slate-600 space-y-1"><li>FTL and LTL options</li><li>Cross-border expertise</li><li>GPS-tracked fleet</li><li>Last-mile delivery</li></ul>
+    </div>
+  </div>
+  <div id="modal-warehouse" class="modal-overlay hidden fixed inset-0 bg-black/50 z-50 items-center justify-center p-4">
+    <div class="bg-white rounded-xl max-w-lg w-full p-6 relative">
+      <button onclick="closeModal('modal-warehouse')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fas fa-times text-xl"></i></button>
+      <h3 class="text-2xl font-bold mb-4">Warehousing</h3>
+      <p class="text-slate-600 mb-4">State-of-the-art warehousing facilities with climate control, 24/7 security, and advanced inventory management systems.</p>
+      <ul class="list-disc list-inside text-slate-600 space-y-1"><li>Climate-controlled storage</li><li>Real-time inventory tracking</li><li>Pick and pack services</li><li>Distribution center network</li></ul>
+    </div>
+  </div>
+
+  <section id="stats-section" class="py-16 bg-blue-600 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div><div class="text-4xl font-bold mb-2"><span class="counter" data-target="45">0</span>+</div><div class="text-blue-200">Partners</div></div>
+        <div><div class="text-4xl font-bold mb-2"><span class="counter" data-target="12">0</span></div><div class="text-blue-200">Accreditations</div></div>
+        <div><div class="text-4xl font-bold mb-2">$<span class="counter" data-target="250">0</span>K+</div><div class="text-blue-200">Donations</div></div>
+        <div><div class="text-4xl font-bold mb-2"><span class="counter" data-target="1200000">0</span>+</div><div class="text-blue-200">Deliveries</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-center mb-12">What Our Clients Say</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-slate-50 p-6 rounded-xl">
+          <div class="flex text-yellow-400 mb-4"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p class="text-slate-600 mb-4">"Global Logistics has transformed our supply chain. Their tracking system is incredibly accurate and their support team is always responsive."</p>
+          <div class="font-semibold">Sarah Johnson</div><div class="text-sm text-slate-500">CEO, TechRetail Inc.</div>
+        </div>
+        <div class="bg-slate-50 p-6 rounded-xl">
+          <div class="flex text-yellow-400 mb-4"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p class="text-slate-600 mb-4">"We've been using their ocean freight services for 3 years. Consistent, reliable, and cost-effective. Highly recommended!"</p>
+          <div class="font-semibold">Michael Chen</div><div class="text-sm text-slate-500">Operations Director, GlobalTrade Co.</div>
+        </div>
+        <div class="bg-slate-50 p-6 rounded-xl">
+          <div class="flex text-yellow-400 mb-4"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+          <p class="text-slate-600 mb-4">"The real-time tracking feature gives us peace of mind. We always know exactly where our shipments are."</p>
+          <div class="font-semibold">Emily Rodriguez</div><div class="text-sm text-slate-500">Logistics Manager, FastShip LLC</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bg-slate-800 text-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="flex items-center justify-center space-x-2 mb-4">
+        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center"><span class="text-white font-bold text-sm">GL</span></div>
+        <span class="text-lg font-bold">GLOBAL LOGISTICS</span>
+      </div>
+      <div class="text-slate-400 mb-4">
+        <p><i class="fas fa-phone mr-2"></i> +1 (800) 555-0199</p>
+        <p><i class="fas fa-envelope mr-2"></i> support@globallogistics.com</p>
+      </div>
+      <div class="text-slate-500 text-sm">&copy; 2024 Global Logistics. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <div class="fixed bottom-6 right-6 z-50">
+    <button onclick="toggleChat()" class="w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition flex items-center justify-center"><i class="fas fa-robot text-2xl"></i></button>
+    <div id="chat-window" class="hidden absolute bottom-16 right-0 w-80 bg-white rounded-xl shadow-2xl border">
+      <div class="bg-blue-600 text-white p-4 rounded-t-xl flex justify-between items-center">
+        <span class="font-semibold"><i class="fas fa-robot mr-2"></i>GL Assistant</span>
+        <button onclick="toggleChat()" class="hover:text-slate-200"><i class="fas fa-times"></i></button>
+      </div>
+      <div id="chat-messages" class="chat-window p-4 space-y-2">
+        <div class="mb-2"><span class="inline-block bg-slate-200 text-slate-700 px-3 py-2 rounded-lg text-sm">Hello! I'm your logistics assistant. How can I help you today?</span></div>
+      </div>
+      <div class="p-3 border-t">
+        <div class="flex space-x-2">
+          <input id="chat-input" type="text" placeholder="Ask about shipping..." class="flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-600">
+          <button onclick="processAIQuery()" class="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700"><i class="fas fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/config.js"></script>
+  <script src="/main.js"></script>
+</body>
+</html>
