@@ -78,48 +78,6 @@ function toggleMobileMenu() {
   if (menu) menu.classList.toggle('hidden');
 }
 
-function toggleChat() {
-  const chatWindow = document.getElementById('chat-window');
-  if (chatWindow) chatWindow.classList.toggle('hidden');
-}
-
-async function processAIQuery() {
-  const input = document.getElementById('chat-input');
-  const messages = document.getElementById('chat-messages');
-  const userMsg = input.value.trim();
-  if (!userMsg) return;
-  messages.innerHTML += `<div class="text-right mb-2"><span class="inline-block bg-blue-600 text-white px-3 py-2 rounded-lg text-sm">${escapeHtml(userMsg)}</span></div>`;
-  input.value = '';
-  messages.scrollTop = messages.scrollHeight;
-  const typingId = 'typing-' + Date.now();
-  messages.innerHTML += `<div id="${typingId}" class="mb-2"><span class="inline-block bg-slate-200 text-slate-700 px-3 py-2 rounded-lg text-sm">Thinking...</span></div>`;
-  messages.scrollTop = messages.scrollHeight;
-  try {
-    const response = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: userMsg })
-    });
-    const data = await response.json();
-    document.getElementById(typingId).remove();
-    if (data.reply) {
-      messages.innerHTML += `<div class="mb-2"><span class="inline-block bg-slate-200 text-slate-700 px-3 py-2 rounded-lg text-sm">${escapeHtml(data.reply)}</span></div>`;
-    } else {
-      messages.innerHTML += `<div class="mb-2"><span class="inline-block bg-red-100 text-red-700 px-3 py-2 rounded-lg text-sm">Sorry, I couldn't process that. Please try again.</span></div>`;
-    }
-  } catch (error) {
-    document.getElementById(typingId).remove();
-    messages.innerHTML += `<div class="mb-2"><span class="inline-block bg-red-100 text-red-700 px-3 py-2 rounded-lg text-sm">Connection error. Please check your internet.</span></div>`;
-  }
-  messages.scrollTop = messages.scrollHeight;
-}
-
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
 let currentSlide = 0;
 let slideInterval;
 
@@ -191,12 +149,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
     observer.observe(statsSection);
   }
-  const chatInput = document.getElementById('chat-input');
-  if (chatInput) {
-    chatInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') processAIQuery();
-    });
-  }
+  // ✅ No old chat code here anymore
 });
 
 window.onclick = function(event) {
