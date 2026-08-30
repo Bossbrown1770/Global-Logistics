@@ -13,22 +13,35 @@
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans">
   <header class="bg-white shadow-md sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-16">
-        <a href="index.html" class="flex items-center space-x-2">
-          <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center"><span class="text-white font-bold text-lg">GL</span></div>
-          <span class="text-xl font-bold text-slate-800">GLOBAL LOGISTICS</span>
-        </a>
-        <nav id="nav-links" class="hidden md:flex items-center space-x-6">
-          <!-- dynamically filled by main.js -->
-        </nav>
-        <button onclick="toggleMobileMenu()" class="md:hidden text-slate-700"><i class="fas fa-bars text-2xl"></i></button>
-      </div>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <!-- Logo -->
+      <a href="index.html" class="flex items-center space-x-2">
+        <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+          <span class="text-white font-bold text-lg">GL</span>
+        </div>
+        <span class="text-xl font-bold text-slate-800">GLOBAL LOGISTICS</span>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav id="nav-links" class="hidden md:flex items-center space-x-6">
+        <!-- Filled by main.js -->
+      </nav>
+
+      <!-- Mobile Menu Toggle -->
+      <button onclick="toggleMobileMenu()" class="md:hidden text-slate-700 p-2 hover:bg-slate-100 rounded-lg transition">
+        <i class="fas fa-bars text-2xl"></i>
+      </button>
     </div>
-    <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
-      <div id="mobile-nav-links" class="px-4 py-3 space-y-2"></div>
+  </div>
+
+  <!-- Mobile Menu (full width, block links) -->
+  <div id="mobile-menu" class="hidden md:hidden bg-white border-t shadow-lg">
+    <div id="mobile-nav-links" class="px-4 py-3 space-y-1">
+      <!-- Filled by main.js with block links -->
     </div>
-  </header>
+  </div>
+</header>
 
   <section class="relative h-[500px] overflow-hidden">
     <div class="slide absolute inset-0 opacity-100">
