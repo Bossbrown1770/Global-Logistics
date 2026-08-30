@@ -10,7 +10,7 @@
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans">
 
-  <!-- ===== HEADER (same as index.html) ===== -->
+  <!-- ===== HEADER ===== -->
   <header class="bg-white shadow-md sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center h-16">
@@ -28,7 +28,6 @@
         </button>
       </div>
     </div>
-    <!-- Mobile menu -->
     <div id="mobile-menu" class="hidden md:hidden bg-white border-t shadow-lg">
       <div id="mobile-nav-links" class="px-4 py-3 space-y-1">
         <!-- filled by main.js -->
@@ -38,7 +37,6 @@
 
   <!-- ===== MAIN CONTENT ===== -->
   <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-
     <div class="bg-white rounded-xl shadow-md p-8 mb-10">
       <h1 class="text-3xl font-bold mb-2">Refund & Guarantee Policy</h1>
       <p class="text-slate-600 mb-6">Transparent rules regarding delivery guarantees, losses, and damages.</p>
@@ -88,10 +86,9 @@
         <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition font-semibold">Submit Claim</button>
       </form>
     </div>
-
   </main>
 
-  <!-- ===== FOOTER (same as index.html) ===== -->
+  <!-- ===== FOOTER with Returns & FAQ centered ===== -->
   <footer class="bg-slate-800 text-white py-12 mt-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       <div class="flex items-center justify-center space-x-2 mb-4">
@@ -100,6 +97,13 @@
         </div>
         <span class="text-lg font-bold">GLOBAL LOGISTICS</span>
       </div>
+
+      <!-- Centered Returns & FAQ links -->
+      <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-slate-400 mb-4">
+        <a href="returns.html" class="hover:text-white transition">Returns</a>
+        <a href="faq.html" class="hover:text-white transition">FAQ</a>
+      </div>
+
       <div class="text-slate-400 mb-4">
         <p><i class="fas fa-phone mr-2"></i> +1 (800) 555-0199</p>
         <p><i class="fas fa-envelope mr-2"></i> support@globallogistics.com</p>
@@ -137,7 +141,6 @@
       alert('Your refund application has been submitted! Claim Reference ID: RF-' + Math.floor(Math.random() * 899999 + 100000));
       e.target.reset();
     }
-    // Ensure chat functions exist
     window.toggleChat = function() {
       const chat = document.getElementById('chat-window');
       chat.classList.toggle('hidden');
