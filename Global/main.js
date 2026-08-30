@@ -39,27 +39,21 @@ function updateNav() {
   const mobileNavContainer = document.getElementById('mobile-nav-links');
   if (!navContainer) return;
 
-  // ----- Define link order -----
-  // Main pages (appear first)
+  // ----- Only main pages + auth links (no Returns, no FAQ) -----
   const mainPages = [
     { href: 'index.html', text: 'Home' },
     { href: 'about.html', text: 'About' },
     { href: 'contact.html', text: 'Contact' }
   ];
 
-
-
-  // Build the full link list for desktop and mobile
   let desktopLinks = [];
   let mobileLinks = [];
 
-  // 1. Main pages
   mainPages.forEach(p => {
     desktopLinks.push(p);
     mobileLinks.push(p);
   });
 
-  // 2. Auth‑dependent links
   if (currentUser) {
     desktopLinks.push({ href: 'tracking.html', text: 'Tracking' });
     mobileLinks.push({ href: 'tracking.html', text: 'Tracking' });
@@ -67,7 +61,6 @@ function updateNav() {
       desktopLinks.push({ href: 'admin.html', text: 'Admin' });
       mobileLinks.push({ href: 'admin.html', text: 'Admin' });
     }
-    // Logout is added as a button later (not in the link array)
   } else {
     desktopLinks.push({ href: 'login.html', text: 'Login' });
     mobileLinks.push({ href: 'login.html', text: 'Login' });
@@ -75,13 +68,7 @@ function updateNav() {
     mobileLinks.push({ href: 'signup.html', text: 'Sign Up', isSignup: true });
   }
 
-  // 3. Footer pages – appended at the end
-  footerPages.forEach(p => {
-    desktopLinks.push(p);
-    mobileLinks.push(p);
-  });
-
-  // ----- Build desktop markup (inline links) -----
+  // Build desktop markup
   let desktopHtml = desktopLinks.map(link => {
     let cls = 'text-slate-700 hover:text-blue-600 font-medium transition';
     if (link.isSignup) {
@@ -90,12 +77,11 @@ function updateNav() {
     return `<a href="${link.href}" class="${cls}">${link.text}</a>`;
   }).join('');
 
-  // Add logout button (desktop)
   if (currentUser) {
     desktopHtml += `<button onclick="logout()" class="text-slate-700 hover:text-blue-600 font-medium transition">Logout</button>`;
   }
 
-  // ----- Build mobile markup (block, full‑width, padded) -----
+  // Build mobile markup
   let mobileHtml = mobileLinks.map(link => {
     let cls = 'block w-full px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-lg transition';
     if (link.isSignup) {
@@ -104,12 +90,10 @@ function updateNav() {
     return `<a href="${link.href}" class="${cls}">${link.text}</a>`;
   }).join('');
 
-  // Add logout button (mobile) as a full‑width block
   if (currentUser) {
     mobileHtml += `<button onclick="logout()" class="block w-full px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-lg transition text-left">Logout</button>`;
   }
 
-  // Inject into containers
   navContainer.innerHTML = desktopHtml;
   if (mobileNavContainer) {
     mobileNavContainer.innerHTML = mobileHtml;
