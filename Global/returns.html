@@ -4,83 +4,147 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Global Logistics – Refund Policy & Claims</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css">
-  <style>
-    .policy-box { background: var(--white); padding: 36px; border-radius: var(--radius); box-shadow: var(--shadow); margin: 32px 0; }
-    .refund-form { background: var(--white); padding: 36px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 40px; }
-    .refund-form label { font-weight: 600; display: block; margin-top: 14px; }
-    .refund-form input, .refund-form select, .refund-form textarea { width: 100%; padding: 12px; border: 1px solid #d0d7de; border-radius: 8px; margin-top: 4px; }
-  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
-<body>
-  <nav class="navbar">
-    <div class="container">
-      <div class="nav-logo">
-        <img src="https://placehold.co/44x44/0b2b5c/white?text=ST" alt="SwiftTrack" />
-        Swift<span>Track</span>
-      </div>
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="contact.html">Contact</a></li>
-      </ul>
-    </div>
-  </nav>
+<body class="bg-slate-50 text-slate-800 font-sans">
 
-  <main class="container">
-    <div class="policy-box">
-      <h1 class="section-title">Refund & Guarantee Policy</h1>
-      <p class="section-sub">Transparent rules regarding delivery guarantees, losses, and damages.</p>
-     
-      <h3 style="margin-top:20px; color:var(--primary);">1. Eligibility for Refund</h3>
-      <p>Clients are eligible for partial or full refunds under the following conditions:</p>
-      <ul style="padding-left: 20px; margin: 10px 0;">
+  <!-- ===== HEADER (same as index.html) ===== -->
+  <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="index.html" class="flex items-center space-x-2">
+          <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+            <span class="text-white font-bold text-lg">GL</span>
+          </div>
+          <span class="text-xl font-bold text-slate-800">GLOBAL LOGISTICS</span>
+        </a>
+        <nav id="nav-links" class="hidden md:flex items-center space-x-6">
+          <!-- filled by main.js -->
+        </nav>
+        <button onclick="toggleMobileMenu()" class="md:hidden text-slate-700 p-2 hover:bg-slate-100 rounded-lg transition">
+          <i class="fas fa-bars text-2xl"></i>
+        </button>
+      </div>
+    </div>
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-t shadow-lg">
+      <div id="mobile-nav-links" class="px-4 py-3 space-y-1">
+        <!-- filled by main.js -->
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+    <div class="bg-white rounded-xl shadow-md p-8 mb-10">
+      <h1 class="text-3xl font-bold mb-2">Refund & Guarantee Policy</h1>
+      <p class="text-slate-600 mb-6">Transparent rules regarding delivery guarantees, losses, and damages.</p>
+
+      <h3 class="text-lg font-bold text-blue-600 mt-6">1. Eligibility for Refund</h3>
+      <p class="text-slate-700">Clients are eligible for partial or full refunds under the following conditions:</p>
+      <ul class="list-disc list-inside text-slate-700 space-y-1 mt-2">
         <li><strong>Service Delays:</strong> Expedited shipments missing guaranteed delivery windows by more than 48 hours.</li>
         <li><strong>Damaged Goods:</strong> Physical damage incurred during transport within our handling network.</li>
         <li><strong>Lost Packages:</strong> Shipments unlocated after 14 days from projected arrival date.</li>
       </ul>
 
-      <h3 style="margin-top:20px; color:var(--primary);">2. Refund Process & Timeline</h3>
-      <p>Submitted claims are evaluated within <strong>3-5 business days</strong>. Approved refunds are returned via original payment methods within 7-10 business days.</p>
+      <h3 class="text-lg font-bold text-blue-600 mt-6">2. Refund Process & Timeline</h3>
+      <p class="text-slate-700">Submitted claims are evaluated within <strong>3-5 business days</strong>. Approved refunds are returned via original payment methods within 7-10 business days.</p>
     </div>
 
-    <div class="refund-form">
-      <h2 style="color:var(--primary);">Process a Refund Request</h2>
-      <form onsubmit="submitRefund(event)">
-        <label>Tracking Code</label>
-        <input type="text" placeholder="ST-XXXXXX" required />
-
-        <label>Full Name</label>
-        <input type="text" placeholder="John Doe" required />
-
-        <label>Email Address</label>
-        <input type="email" placeholder="john@example.com" required />
-
-        <label>Reason for Refund</label>
-        <select required>
-          <option value="">Select Reason</option>
-          <option value="delay">Delivery Delay</option>
-          <option value="damage">Package Damaged</option>
-          <option value="lost">Lost Package</option>
-          <option value="other">Other Issue</option>
-        </select>
-
-        <label>Reason Details & Description</label>
-        <textarea style="height:100px;" placeholder="Provide details regarding the claim..." required></textarea>
-
-        <button type="submit" class="btn-primary" style="margin-top:20px;">Submit Claim</button>
+    <!-- Refund Request Form -->
+    <div class="bg-white rounded-xl shadow-md p-8">
+      <h2 class="text-2xl font-bold text-blue-600 mb-6">Process a Refund Request</h2>
+      <form onsubmit="submitRefund(event)" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-slate-700">Tracking Code</label>
+          <input type="text" placeholder="GL-XXXXXX" required class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:border-blue-600">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700">Full Name</label>
+          <input type="text" placeholder="John Doe" required class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:border-blue-600">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700">Email Address</label>
+          <input type="email" placeholder="john@example.com" required class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:border-blue-600">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700">Reason for Refund</label>
+          <select required class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:border-blue-600">
+            <option value="">Select Reason</option>
+            <option value="delay">Delivery Delay</option>
+            <option value="damage">Package Damaged</option>
+            <option value="lost">Lost Package</option>
+            <option value="other">Other Issue</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700">Reason Details & Description</label>
+          <textarea rows="4" placeholder="Provide details regarding the claim..." required class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:border-blue-600"></textarea>
+        </div>
+        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition font-semibold">Submit Claim</button>
       </form>
     </div>
+
   </main>
 
+  <!-- ===== FOOTER (same as index.html) ===== -->
+  <footer class="bg-slate-800 text-white py-12 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="flex items-center justify-center space-x-2 mb-4">
+        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+          <span class="text-white font-bold text-sm">GL</span>
+        </div>
+        <span class="text-lg font-bold">GLOBAL LOGISTICS</span>
+      </div>
+      <div class="text-slate-400 mb-4">
+        <p><i class="fas fa-phone mr-2"></i> +1 (800) 555-0199</p>
+        <p><i class="fas fa-envelope mr-2"></i> support@globallogistics.com</p>
+      </div>
+      <div class="text-slate-500 text-sm">&copy; 2024 Global Logistics. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <!-- ===== CHAT WIDGET ===== -->
+  <div class="fixed bottom-6 right-6 z-50">
+    <button onclick="toggleChat()" class="w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition flex items-center justify-center">
+      <i class="fas fa-robot text-2xl"></i>
+    </button>
+    <div id="chat-window" class="hidden absolute bottom-16 right-0 w-80 bg-white rounded-xl shadow-2xl border">
+      <div class="bg-blue-600 text-white p-4 rounded-t-xl flex justify-between items-center">
+        <span class="font-semibold"><i class="fas fa-robot mr-2"></i>GL Assistant</span>
+        <button onclick="toggleChat()" class="hover:text-slate-200"><i class="fas fa-times"></i></button>
+      </div>
+      <div id="chat-messages" class="max-h-80 overflow-y-auto p-4 space-y-2">
+        <div class="mb-2"><span class="inline-block bg-slate-200 text-slate-700 px-3 py-2 rounded-lg text-sm">Hello! I'm your logistics assistant. How can I help you today?</span></div>
+      </div>
+      <div class="p-3 border-t">
+        <div class="flex space-x-2">
+          <input id="chat-input" type="text" placeholder="Ask about shipping..." class="flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-600">
+          <button onclick="processAIQuery()" class="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700"><i class="fas fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
   <script>
     function submitRefund(e) {
       e.preventDefault();
       alert('Your refund application has been submitted! Claim Reference ID: RF-' + Math.floor(Math.random() * 899999 + 100000));
       e.target.reset();
     }
+    // Ensure chat functions exist
+    window.toggleChat = function() {
+      const chat = document.getElementById('chat-window');
+      chat.classList.toggle('hidden');
+    };
+    window.processAIQuery = function() {
+      alert('AI chat is being integrated. Stay tuned!');
+    };
   </script>
 </body>
 </html>
