@@ -39,34 +39,54 @@ function updateNav() {
   const mobileNavContainer = document.getElementById('mobile-nav-links');
   if (!navContainer) return;
 
-  // Helper: build an array of link objects (same for both menus)
-  const links = [];
-
-  // Common pages
-  const commonPages = [
+  // ----- Define link order -----
+  // Main pages (appear first)
+  const mainPages = [
     { href: 'index.html', text: 'Home' },
     { href: 'about.html', text: 'About' },
-    { href: 'contact.html', text: 'Contact' },
-    { href: 'returns.html', text: 'Returns' },
-    { href: 'policy.html', text: 'Policy' }
+    { href: 'contact.html', text: 'Contact' }
   ];
-  commonPages.forEach(p => links.push(p));
 
-  // Auth-dependent links
+  // Footer pages – placed at the bottom (Returns & FAQ)
+  const footerPages = [
+    { href: 'returns.html', text: 'Returns' },
+    { href: 'faq.html', text: 'FAQ' }   // ← renamed from policy.html
+  ];
+
+  // Build the full link list for desktop and mobile
+  let desktopLinks = [];
+  let mobileLinks = [];
+
+  // 1. Main pages
+  mainPages.forEach(p => {
+    desktopLinks.push(p);
+    mobileLinks.push(p);
+  });
+
+  // 2. Auth‑dependent links
   if (currentUser) {
-    links.push({ href: 'tracking.html', text: 'Tracking' });
+    desktopLinks.push({ href: 'tracking.html', text: 'Tracking' });
+    mobileLinks.push({ href: 'tracking.html', text: 'Tracking' });
     if (currentProfile && currentProfile.role === 'admin') {
-      links.push({ href: 'admin.html', text: 'Admin' });
+      desktopLinks.push({ href: 'admin.html', text: 'Admin' });
+      mobileLinks.push({ href: 'admin.html', text: 'Admin' });
     }
-    // Logout as a button (we'll treat it specially)
-    // We'll handle logout as a separate element below
+    // Logout is added as a button later (not in the link array)
   } else {
-    links.push({ href: 'login.html', text: 'Login' });
-    links.push({ href: 'signup.html', text: 'Sign Up', isSignup: true });
+    desktopLinks.push({ href: 'login.html', text: 'Login' });
+    mobileLinks.push({ href: 'login.html', text: 'Login' });
+    desktopLinks.push({ href: 'signup.html', text: 'Sign Up', isSignup: true });
+    mobileLinks.push({ href: 'signup.html', text: 'Sign Up', isSignup: true });
   }
 
-  // --- Build desktop markup (inline links, no block) ---
-  let desktopHtml = links.map(link => {
+  // 3. Footer pages – appended at the end
+  footerPages.forEach(p => {
+    desktopLinks.push(p);
+    mobileLinks.push(p);
+  });
+
+  // ----- Build desktop markup (inline links) -----
+  let desktopHtml = desktopLinks.map(link => {
     let cls = 'text-slate-700 hover:text-blue-600 font-medium transition';
     if (link.isSignup) {
       cls += ' bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700';
@@ -74,23 +94,21 @@ function updateNav() {
     return `<a href="${link.href}" class="${cls}">${link.text}</a>`;
   }).join('');
 
-  // Add logout button separately if logged in
+  // Add logout button (desktop)
   if (currentUser) {
     desktopHtml += `<button onclick="logout()" class="text-slate-700 hover:text-blue-600 font-medium transition">Logout</button>`;
   }
 
-  // --- Build mobile markup (block links with padding) ---
-  let mobileHtml = links.map(link => {
-    // All mobile links are block, full width, with padding
+  // ----- Build mobile markup (block, full‑width, padded) -----
+  let mobileHtml = mobileLinks.map(link => {
     let cls = 'block w-full px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-lg transition';
     if (link.isSignup) {
-      // For signup, we can make it stand out with a blue background
       cls += ' bg-blue-600 text-white hover:bg-blue-700';
     }
     return `<a href="${link.href}" class="${cls}">${link.text}</a>`;
   }).join('');
 
-  // Add logout as a block button for mobile
+  // Add logout button (mobile) as a full‑width block
   if (currentUser) {
     mobileHtml += `<button onclick="logout()" class="block w-full px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-lg transition text-left">Logout</button>`;
   }
@@ -116,6 +134,7 @@ function toggleMobileMenu() {
   if (menu) menu.classList.toggle('hidden');
 }
 
+// ----- Slideshow / Modal / Counter functions (unchanged) -----
 let currentSlide = 0;
 let slideInterval;
 
@@ -187,7 +206,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
     observer.observe(statsSection);
   }
-  // ✅ No old chat code here anymore
 });
 
 window.onclick = function(event) {
@@ -198,4 +216,4 @@ window.onclick = function(event) {
       modal.classList.remove('flex');
     }
   });
-}
+};
