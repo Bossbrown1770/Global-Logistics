@@ -47,11 +47,7 @@ function updateNav() {
     { href: 'contact.html', text: 'Contact' }
   ];
 
-  // Footer pages – placed at the bottom (Returns & FAQ)
-  const footerPages = [
-    { href: 'returns.html', text: 'Returns' },
-    { href: 'faq.html', text: 'FAQ' }   // ← renamed from policy.html
-  ];
+
 
   // Build the full link list for desktop and mobile
   let desktopLinks = [];
