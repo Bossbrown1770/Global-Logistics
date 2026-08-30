@@ -38,29 +38,67 @@ function updateNav() {
   const navContainer = document.getElementById('nav-links');
   const mobileNavContainer = document.getElementById('mobile-nav-links');
   if (!navContainer) return;
-  const commonLinks = `
-    <a href="index.html" class="text-slate-700 hover:text-blue-600 font-medium transition">Home</a>
-    <a href="about.html" class="text-slate-700 hover:text-blue-600 font-medium transition">About</a>
-    <a href="contact.html" class="text-slate-700 hover:text-blue-600 font-medium transition">Contact</a>
-    <a href="returns.html" class="text-slate-700 hover:text-blue-600 font-medium transition">Returns</a>
-    <a href="policy.html" class="text-slate-700 hover:text-blue-600 font-medium transition">Policy</a>
-  `;
-  let authLinks = '';
+
+  // Helper: build an array of link objects (same for both menus)
+  const links = [];
+
+  // Common pages
+  const commonPages = [
+    { href: 'index.html', text: 'Home' },
+    { href: 'about.html', text: 'About' },
+    { href: 'contact.html', text: 'Contact' },
+    { href: 'returns.html', text: 'Returns' },
+    { href: 'policy.html', text: 'Policy' }
+  ];
+  commonPages.forEach(p => links.push(p));
+
+  // Auth-dependent links
   if (currentUser) {
-    authLinks += `<a href="tracking.html" class="text-slate-700 hover:text-blue-600 font-medium transition">Tracking</a>`;
+    links.push({ href: 'tracking.html', text: 'Tracking' });
     if (currentProfile && currentProfile.role === 'admin') {
-      authLinks += `<a href="admin.html" class="text-slate-700 hover:text-blue-600 font-medium transition">Admin</a>`;
+      links.push({ href: 'admin.html', text: 'Admin' });
     }
-    authLinks += `<button onclick="logout()" class="text-slate-700 hover:text-blue-600 font-medium transition">Logout</button>`;
+    // Logout as a button (we'll treat it specially)
+    // We'll handle logout as a separate element below
   } else {
-    authLinks += `
-      <a href="login.html" class="text-slate-700 hover:text-blue-600 font-medium transition">Login</a>
-      <a href="signup.html" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Sign Up</a>
-    `;
+    links.push({ href: 'login.html', text: 'Login' });
+    links.push({ href: 'signup.html', text: 'Sign Up', isSignup: true });
   }
-  navContainer.innerHTML = commonLinks + authLinks;
+
+  // --- Build desktop markup (inline links, no block) ---
+  let desktopHtml = links.map(link => {
+    let cls = 'text-slate-700 hover:text-blue-600 font-medium transition';
+    if (link.isSignup) {
+      cls += ' bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700';
+    }
+    return `<a href="${link.href}" class="${cls}">${link.text}</a>`;
+  }).join('');
+
+  // Add logout button separately if logged in
+  if (currentUser) {
+    desktopHtml += `<button onclick="logout()" class="text-slate-700 hover:text-blue-600 font-medium transition">Logout</button>`;
+  }
+
+  // --- Build mobile markup (block links with padding) ---
+  let mobileHtml = links.map(link => {
+    // All mobile links are block, full width, with padding
+    let cls = 'block w-full px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-lg transition';
+    if (link.isSignup) {
+      // For signup, we can make it stand out with a blue background
+      cls += ' bg-blue-600 text-white hover:bg-blue-700';
+    }
+    return `<a href="${link.href}" class="${cls}">${link.text}</a>`;
+  }).join('');
+
+  // Add logout as a block button for mobile
+  if (currentUser) {
+    mobileHtml += `<button onclick="logout()" class="block w-full px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-lg transition text-left">Logout</button>`;
+  }
+
+  // Inject into containers
+  navContainer.innerHTML = desktopHtml;
   if (mobileNavContainer) {
-    mobileNavContainer.innerHTML = commonLinks + authLinks;
+    mobileNavContainer.innerHTML = mobileHtml;
   }
 }
 
