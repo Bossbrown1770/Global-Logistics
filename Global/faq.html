@@ -3,63 +3,148 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Global Logistics - FAQ</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css">
-  <style>
-    .faq-item { background: var(--white); border-radius: var(--radius); margin-bottom: 16px; box-shadow: var(--shadow); overflow: hidden; }
-    .faq-question { padding: 20px 24px; font-weight: 700; color: var(--primary); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-    .faq-answer { padding: 0 24px 20px; display: none; color: var(--text-dark); border-top: 1px solid var(--bg-light); padding-top: 16px; }
-    .faq-item.open .faq-answer { display: block; }
-  </style>
+  <title>Global Logistics – FAQ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
-<body>
-  <nav class="navbar">
-    <div class="container">
-      <div class="nav-logo">
-        <img src="https://placehold.co/44x44/0b2b5c/white?text=ST" alt="SwiftTrack" />
-        Swift<span>Track</span>
+<body class="bg-slate-50 text-slate-800 font-sans">
+
+  <!-- ===== HEADER (same as index.html) ===== -->
+  <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="index.html" class="flex items-center space-x-2">
+          <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+            <span class="text-white font-bold text-lg">GL</span>
+          </div>
+          <span class="text-xl font-bold text-slate-800">GLOBAL LOGISTICS</span>
+        </a>
+        <nav id="nav-links" class="hidden md:flex items-center space-x-6">
+          <!-- filled by main.js -->
+        </nav>
+        <button onclick="toggleMobileMenu()" class="md:hidden text-slate-700 p-2 hover:bg-slate-100 rounded-lg transition">
+          <i class="fas fa-bars text-2xl"></i>
+        </button>
       </div>
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="contact.html">Contact</a></li>
-        <li><a href="FAQ.html" class="active">FAQ</a></li>
-      </ul>
     </div>
-  </nav>
-
-  <main class="container" style="margin-top:32px; margin-bottom:40px;">
-    <h1 class="section-title" style="text-align:center;">Frequently Asked Questions</h1>
-    <p class="section-sub" style="margin:0 auto 32px; text-align:center;">Find quick answers regarding tracking, customer accounts, and logistics services.</p>
-
-    <div class="faq-item">
-      <div class="faq-question" onclick="toggleFaq(this)">How do I track my parcel? <i class="fas fa-chevron-down"></i></div>
-      <div class="faq-answer">Log into your user account on the tracking page, enter your unique tracking ID provided in your receipt, and hit "Track" to see live updates.</div>
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-t shadow-lg">
+      <div id="mobile-nav-links" class="px-4 py-3 space-y-1">
+        <!-- filled by main.js -->
+      </div>
     </div>
+  </header>
 
-    <div class="faq-item">
-      <div class="faq-question" onclick="toggleFaq(this)">Why do I need to register before tracking? <i class="fas fa-chevron-down"></i></div>
-      <div class="faq-answer">Account registration ensures package data privacy and allows us to notify you directly via email when package statuses change.</div>
-    </div>
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
-    <div class="faq-item">
-      <div class="faq-question" onclick="toggleFaq(this)">What should I do if my package is delayed? <i class="fas fa-chevron-down"></i></div>
-      <div class="faq-answer">Check live status logs for potential customs holds. If delayed beyond expected dates, submit a claim on our Refund Policy page.</div>
-    </div>
+    <h1 class="text-3xl font-bold text-center mb-4">Frequently Asked Questions</h1>
+    <p class="text-center text-slate-600 mb-12">Find quick answers regarding tracking, customer accounts, and logistics services.</p>
 
-    <div class="faq-item">
-      <div class="faq-question" onclick="toggleFaq(this)">How can I contact customer support? <i class="fas fa-chevron-down"></i></div>
-      <div class="faq-answer">Use the floating support chat widget at the bottom right of any page or send us a message through our Contact page.</div>
+    <!-- FAQ items with Tailwind collapsible -->
+    <div class="space-y-4">
+
+      <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-4 font-semibold text-blue-600 flex justify-between items-center hover:bg-slate-50 transition">
+          <span>How do I track my parcel?</span>
+          <i class="fas fa-chevron-down text-slate-400"></i>
+        </button>
+        <div class="faq-answer px-6 pb-4 text-slate-600 hidden border-t border-slate-100 pt-3">
+          Log into your user account on the tracking page, enter your unique tracking ID provided in your receipt, and hit "Track" to see live updates.
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-4 font-semibold text-blue-600 flex justify-between items-center hover:bg-slate-50 transition">
+          <span>Why do I need to register before tracking?</span>
+          <i class="fas fa-chevron-down text-slate-400"></i>
+        </button>
+        <div class="faq-answer px-6 pb-4 text-slate-600 hidden border-t border-slate-100 pt-3">
+          Account registration ensures package data privacy and allows us to notify you directly via email when package statuses change.
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-4 font-semibold text-blue-600 flex justify-between items-center hover:bg-slate-50 transition">
+          <span>What should I do if my package is delayed?</span>
+          <i class="fas fa-chevron-down text-slate-400"></i>
+        </button>
+        <div class="faq-answer px-6 pb-4 text-slate-600 hidden border-t border-slate-100 pt-3">
+          Check live status logs for potential customs holds. If delayed beyond expected dates, submit a claim on our Refund Policy page.
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-4 font-semibold text-blue-600 flex justify-between items-center hover:bg-slate-50 transition">
+          <span>How can I contact customer support?</span>
+          <i class="fas fa-chevron-down text-slate-400"></i>
+        </button>
+        <div class="faq-answer px-6 pb-4 text-slate-600 hidden border-t border-slate-100 pt-3">
+          Use the floating support chat widget at the bottom right of any page or send us a message through our Contact page.
+        </div>
+      </div>
+
     </div>
   </main>
 
+  <!-- ===== FOOTER (same as index.html) ===== -->
+  <footer class="bg-slate-800 text-white py-12 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="flex items-center justify-center space-x-2 mb-4">
+        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+          <span class="text-white font-bold text-sm">GL</span>
+        </div>
+        <span class="text-lg font-bold">GLOBAL LOGISTICS</span>
+      </div>
+      <div class="text-slate-400 mb-4">
+        <p><i class="fas fa-phone mr-2"></i> +1 (800) 555-0199</p>
+        <p><i class="fas fa-envelope mr-2"></i> support@globallogistics.com</p>
+      </div>
+      <div class="text-slate-500 text-sm">&copy; 2024 Global Logistics. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <!-- ===== CHAT WIDGET ===== -->
+  <div class="fixed bottom-6 right-6 z-50">
+    <button onclick="toggleChat()" class="w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition flex items-center justify-center">
+      <i class="fas fa-robot text-2xl"></i>
+    </button>
+    <div id="chat-window" class="hidden absolute bottom-16 right-0 w-80 bg-white rounded-xl shadow-2xl border">
+      <div class="bg-blue-600 text-white p-4 rounded-t-xl flex justify-between items-center">
+        <span class="font-semibold"><i class="fas fa-robot mr-2"></i>GL Assistant</span>
+        <button onclick="toggleChat()" class="hover:text-slate-200"><i class="fas fa-times"></i></button>
+      </div>
+      <div id="chat-messages" class="max-h-80 overflow-y-auto p-4 space-y-2">
+        <div class="mb-2"><span class="inline-block bg-slate-200 text-slate-700 px-3 py-2 rounded-lg text-sm">Hello! I'm your logistics assistant. How can I help you today?</span></div>
+      </div>
+      <div class="p-3 border-t">
+        <div class="flex space-x-2">
+          <input id="chat-input" type="text" placeholder="Ask about shipping..." class="flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-600">
+          <button onclick="processAIQuery()" class="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700"><i class="fas fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
   <script>
-    function toggleFaq(element) {
-      const parent = element.parentElement;
-      parent.classList.toggle('open');
+    // Toggle FAQ answer
+    function toggleFaq(btn) {
+      const answer = btn.nextElementSibling;
+      const icon = btn.querySelector('.fa-chevron-down');
+      answer.classList.toggle('hidden');
+      icon.classList.toggle('rotate-180');
     }
+    // Ensure chat toggle works (already defined in main.js)
+    window.toggleChat = function() {
+      const chat = document.getElementById('chat-window');
+      chat.classList.toggle('hidden');
+    };
+    // Placeholder for processAIQuery – you can implement later
+    window.processAIQuery = function() {
+      alert('AI chat is being integrated. Stay tuned!');
+    };
   </script>
 </body>
 </html>
